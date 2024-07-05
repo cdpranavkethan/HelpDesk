@@ -1,0 +1,161 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+</head>
+<body>
+    <h2>User Registration</h2>
+    <form id="registrationForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <label for="role">Role:</label>
+        <select id="role" name="role">
+            <option value="customer">Customer</option>
+            <option value="support_manager">Support Manager</option>
+        </select><br><br>
+
+        <button type="submit">Register</button>
+    </form>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <br><br>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const registrationForm = document.getElementById('registrationForm');
+        const loginForm = document.getElementById('loginForm');
+
+        registrationForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(registrationForm);
+            const userData = Object.fromEntries(formData.entries());
+            try {
+                const response = await axios.post('http://localhost:3000/api/auth/register', userData);
+                alert(response.data.message);
+            } catch (error) {
+                if (error.response) {
+                    alert(error.response.data.message);
+                } else {
+                    console.error('Error:', error.message);
+                }
+            }
+        });
+
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(loginForm);
+            const userData = Object.fromEntries(formData.entries());
+            try {
+                const response = await axios.post('http://localhost:3000/api/auth/login', userData);
+                alert(response.data.token);
+            } catch (error) {
+                if (error.response) {
+                    alert(error.response.data.message);
+                } else {
+                    console.error('Error:', error.message);
+                }
+            }
+        });
+
+    </script>
+</body>
+</html> -->
+
+
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Base Search</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div>
+    <input type="text" id="searchInput" placeholder="Enter search query">
+    <button onclick="handleSearch()">Search</button>
+  </div>
+  <ul id="searchResults"></ul>
+
+  <script>
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value;
+      const url = `http://localhost:3000/api/knowledge-base/search?q=${query}`;
+
+      axios.get(url)
+        .then(response => {
+          displayResults(response.data);
+        })
+        .catch(error => {
+          console.error('Error searching articles:', error);
+        });
+    }
+
+    function displayResults(results) {
+      const searchResultsElement = document.getElementById('searchResults');
+      searchResultsElement.innerHTML = '';
+
+      results.forEach(article => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <h3>${article.title}</h3>
+          <p>${article.content}</p>
+        `;
+        searchResultsElement.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat API Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script src="./script.js"></script>
+</head>
+<body>
+    <h1>Chat API Test</h1>
+    
+    <h2>Create New Chat Message:</h2>
+    <textarea id="newMessage" placeholder="Enter Message"></textarea>
+    <textarea id="sender" placeholder="Enter sender"></textarea>
+    <button onclick="createMessage()">Create Message</button>
+    
+    <h2>Get Unanswered Questions:</h2>
+    <button onclick="getUnanswered()">Get Unanswered Questions</button>
+    
+    <h2>Get User's Messages:</h2>
+    <input type="text" id="username" placeholder="Enter Username">
+    <button onclick="getUserMessages()">Get User's Messages</button>
+    
+    <h2>Update Chat Message:</h2>
+    <input type="text" id="messageId" placeholder="Enter Message ID">
+    <input type="text" id="agent" placeholder="Enter Agent Name">
+    <input type="text" id="response" placeholder="Enter Response">
+    <button onclick="updateMessage()">Update Message</button>
+</body>
+</html>
+ -->

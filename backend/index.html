@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat API Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Chat API Test</h1>
+    
+    <h2>Create New Chat Message:</h2>
+    <textarea id="newMessage" placeholder="Enter Message"></textarea>
+    <textarea id="sender" placeholder="Enter Sender"></textarea>
+    <button onclick="createMessage()">Create Message</button>
+    <p id="createMessageResponse"></p>
+    
+    <h2>Get Unanswered Questions:</h2>
+    <button onclick="getUnanswered()">Get Unanswered Questions</button>
+    <table id="unansweredQuestionsTable">
+        <thead>
+            <tr>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    
+    <h2>Get User's Messages:</h2>
+    <input type="text" id="username" placeholder="Enter Username">
+    <button onclick="getUserMessages()">Get User's Messages</button>
+    <table id="customerMessagesTable">
+        <thead>
+            <tr>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    
+    <h2>Update Chat Message:</h2>
+    <input type="text" id="messageId" placeholder="Enter Message ID">
+    <input type="text" id="agent" placeholder="Enter Agent Name">
+    <input type="text" id="response" placeholder="Enter Response">
+    <button onclick="updateMessage()">Update Message</button>
+    <p id="updateMessageResponse"></p>
+    
+    <script>
+        const baseURL = 'http://localhost:3000/api/chat';
+
+        async function createMessage() {
+            const newMessage = document.getElementById('newMessage').value;
+            const sender = document.getElementById('sender').value;
+            try {
+                const response = await axios.post(baseURL, { sender: sender, message: newMessage });
+                document.getElementById('createMessageResponse').innerText = response.data.message;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function getUnanswered() {
+            try {
+                const response = await axios.get(`${baseURL}/unanswered`);
+                const unansweredQuestions = response.data;
+                const tableBody = document.querySelector('#unansweredQuestionsTable tbody');
+                tableBody.innerHTML = '';
+                unansweredQuestions.forEach(question => {
+                    const row = tableBody.insertRow();
+                    const cell = row.insertCell();
+                    cell.textContent = question.message;
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function getUserMessages() {
+            const username = document.getElementById('username').value;
+            try {
+                const response = await axios.get(`${baseURL}/customer/${username}`);
+                const customerMessages = response.data;
+                const tableBody = document.querySelector('#customerMessagesTable tbody');
+                tableBody.innerHTML = '';
+                customerMessages.forEach(message => {
+                    const row = tableBody.insertRow();
+                    const cell = row.insertCell();
+                    cell.textContent = message.message;
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function updateMessage() {
+            const messageId = document.getElementById('messageId').value;
+            const agent = document.getElementById('agent').value;
+            const responseText = document.getElementById('response').value;
+            try {
+                const response = await axios.put(`${baseURL}/${messageId}`, { agent: agent, response: responseText });
+                document.getElementById('updateMessageResponse').innerText = response.data.message;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
