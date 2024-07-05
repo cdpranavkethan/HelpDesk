@@ -3,18 +3,36 @@ import axios from "axios";
 import '../App.css';
 import BarChart from "../BarChart";
 import "bootstrap/dist/css/bootstrap.css"
+import { useNavigate } from "react-router-dom";
 
 function ChatAnalytics(){
     const [analyticsData, setAnalyticsData] = useState(null);
+    const [token,setToken]=useState('');
+    const navigate=useNavigate();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get('http://localhost:3099/api/analytics/chat'); // Replace with your API endpoint
-            setAnalyticsData(response.data);
-        };
-
+    useEffect(()=>{
         fetchData();
-    }, []);
+        const storedToken=localStorage.getItem('token');
+        setToken(storedToken);
+    },[navigate]);
+
+    useEffect(()=>{
+        if(token){
+            fetchData();
+        }
+    },[token]);
+
+    
+        const fetchData = async () => {
+            try{
+            const response = await axios.get('http://localhost:3001/api/analytics/chat',{
+                headers: { Authorization: `Bearer ${token}` }
+            }); // Replace with your API endpoint
+            setAnalyticsData(response.data);
+        }catch(error){
+            console.log('Error',error);
+        }};
+
 
     const data = {
         totalChats: parseInt(analyticsData?.totalChats || 0, 10),

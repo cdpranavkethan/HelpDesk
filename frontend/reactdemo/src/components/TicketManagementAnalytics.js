@@ -1,29 +1,45 @@
 import React,{useState,useEffect} from "react";
 import axios from'axios';
-//import '../App.css';
 import BarChart from "../BarChart";
 import "bootstrap/dist/css/bootstrap.css"
+import { useNavigate } from 'react-router-dom';
 
 function TicketManagementAnalytics() {
     const [analyticsData, setAnalyticsData] = useState(null);
+    const [token, setToken] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get('http://localhost:3099/api/analytics/chat'); // Replace with your API endpoint
-            setAnalyticsData(response.data);
-        };
-
+        // Fetch initial search results and all articles on component mount
         fetchData();
-    }, []);
+        // Retrieve token from localStorage
+        const storedToken = localStorage.getItem('token');
+          setToken(storedToken);
+      }, [navigate]);
+    
+      useEffect(() => {
+        // Fetch all articles when the token changes
+        if (token) {
+          fetchData();
+        }
+      }, [token]);
+
+      const fetchData=async()=>{
+        try{
+            const response=await axios.get('http://localhost:3001/api/analytics/chat',{
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setAnalyticsData(response.data);
+        }catch(error){
+            console.log('Error',error);
+        }
+      };
 
     const data = {
         totalChats: parseInt(analyticsData?.totalChats || 0, 10),
         averageResponseTime: parseInt(analyticsData?.averageResponseTime || 0, 10)
     };
 
-
-
-    //console.log('egrfv',analyticsData.totalChats)
     return (
         <div className="container-fluid page-wrapper">
             <div className="container mt-5">
@@ -53,6 +69,7 @@ function TicketManagementAnalytics() {
             </div>
         </div>
     );
+    
 };
 
 export default TicketManagementAnalytics;

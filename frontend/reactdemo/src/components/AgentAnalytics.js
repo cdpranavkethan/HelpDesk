@@ -11,7 +11,7 @@ function AgentAnalytics() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3099/api/analytics/agents/'); // Replace with your API endpoint
+                const response = await axios.get('http://localhost:3001/api/analytics/agents/'); // Replace with your API endpoint
                 setAgents(response.data);
             } catch (error) {
                 console.error('There was an error fetching the data!', error);
